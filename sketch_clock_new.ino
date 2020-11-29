@@ -18,7 +18,7 @@ B11011010,  // 2
 B11110010,  // 3
 B01100110,  // 4
 B10110110,  // 5
-B10111110,  // 6
+B10111110,  // 6 
 B11100000,  // 7
 B11111110,  // 8
 B11100110   // 9
@@ -31,15 +31,18 @@ byte minutes_ones_byte;
 byte minutes_tens_byte;
 byte hours_ones_byte;
 byte hours_tens_byte;
+// MINUTES + HOURS + SECONDS
 // INT
-int hours_int = 2;
-int minutes_int = 8;
+int hours_int = 8;
+int minutes_int = 30;
 int seconds_int = 0;
-// ones & tens
+// ONES & TENS
 int minutes_ones_int;
 int minutes_tens_int;
 int hours_ones_int;
 int hours_tens_int;
+// OTHER
+int minutes_counter = 0;
 
 void setup() {
 // put your setup code here, to run once:
@@ -51,7 +54,6 @@ pinMode(TENS_PLACE_PIN, OUTPUT);
 pinMode(HUNDREDS_PLACE_PIN, OUTPUT);
 pinMode(THOUSANDS_PLACE_PIN, OUTPUT);
 
-Serial.begin(9600);
 }
 
 void loop() {
@@ -61,24 +63,25 @@ void loop() {
 
   // splitting digits
   if (seconds_int == 59) {
-    minutes_int = minutes_int + 1;
-    seconds_int = 0;
+    minutes_counter++;
+    minutes_int++;
+    if (minutes_counter == 5) {
+      seconds_int = 1;
+      minutes_counter = 0;
+    }
+    else {
+      seconds_int = 0;
+    }
   }
-
-  if (minutes_int == 61) {
-    hours_int = hours_int + 1;
+  
+  if (minutes_int == 60) {
+    hours_int++;
     minutes_int = 0;
   }
 
   if (hours_int == 13) {
     hours_int = 1;
   }
-
-Serial.print(hours_int);
-Serial.print(":");
-Serial.print(minutes_int);
-Serial.print(":");
-Serial.println(seconds_int);
   
   // split digits
   // minutes
@@ -155,6 +158,5 @@ Serial.println(seconds_int);
     else {
       delay(DELAY_TIME);
     }
-  }
-
+  }  
 }
